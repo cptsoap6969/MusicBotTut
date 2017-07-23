@@ -25,12 +25,12 @@ var skippers = [];
 
 client.login(discord_token);
 
-client.on('message', function(message) {
+client.on('message', function (message) {
   const member = message.member;
   const mess = message.content.toLowerCase();
-  const args = message.content.split(' ').slice(1).join(' ');
+  const args = message.content.split(' ').slice(1).join(" ");
   
-  if (mess.startsWith(prefix + 'play')) {
+  if (mess.startsWith(prefix + "play")) {
           if (queue.length > 0 || isPlaying) {
         getID(args, function(id) {
           add_to_queue(id);
@@ -49,7 +49,7 @@ client.on('message', function(message) {
             message.reply(" now playing **" + videoInfo.title + "**");
           });
         });
-      }
+      }  
     } else if (mess.startsWith(prefix + "skip")){
       if(skippers.indexOf(message.author.id) === -1){
         skippers.push(message.author.id);
@@ -72,12 +72,6 @@ client.on('ready', function() {
 });
 function skip_song(message) {
   dispatcher.end();
-    if(queue.length > 1) {
-        playMusic(queue[0], message);
-    } else {
-    skipReq = 0
-    skippers = [];
-  }
 }
 
 function playMusic(id, message) {
@@ -118,7 +112,7 @@ function getID(str, cb) {
 }
 
 function add_to_queue(strID) {
-  if (isYoutube(strID, message)) {
+  if (isYoutube(strID)) {
     queue.push(getYouTubeID(strID));
   } else {
     queue.push(strID);
@@ -133,5 +127,5 @@ function search_video(query, callback) {
 }
 
 function isYoutube(str) {
-  return str.toLowerCase().indexOf('youtube.com') > -1;
+  return str.toLowerCase().indexOf("youtube.com")> -1;
 }
