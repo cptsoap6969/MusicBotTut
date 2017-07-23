@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const client = new Discord.Client();
+const bot = new Discord.Client();
 const ytdl = require('ytdl-core');
 const request = require('request');
 const fs = require('fs');
@@ -13,49 +13,77 @@ const bot_controller = config.bot_controller;
 const prefix = config.prefix;
 const discord_token = config.discord_token;
 
-var guilds = {};
+bot.on('ready', (ready) => {
+    console.log(`I am ${bot.user.username}, and I am ready to go.`);
 
-var queue = [];
-var queueNames = [];
-var isPlaying = false;
-var dispatcher = null;
-var voiceChannel = null;
-var skipReq = 0;
-var skippers = [];
+});
 
-client.login(discord_token);
+bot.on('message', function (message) {
+    const member = message.member;
+    const msg = message.content.toLowerCase();
+    const args = message.content.split(' ').slice(1).join(" ");
 
-client.on('message', function(message) {
-  const member = message.member;
-  const mess = message.content.toLowerCase();
-  const args = message.content.split(' ').slice(1).join(' ');
-  
-  if (mess.startsWith(prefix + 'play')) {
-          if (queue.length > 0 || isPlaying) {
-        getID(args, function(id) {
-          add_to_queue(id);
-          fetchVideoInfo(id, function(err, videoInfo) {
-            if (err) throw new Error(err);
-            message.reply(" added to queue **" + videoInfo.title + "**");
-          });
-        });
-      } else {
-        isPlaying = true;
-        getID(args, function(id) {
-          queue.push("placeholder");
-          playMusic(id, message);
-          fetchVideoInfo(id, function(err, videoInfo) {
-            if (err) throw new Error(err);
-            message.reply(" now playing **" + videoInfo.title + "**");
-          });
-        });
-      }
+    var queue = [];
+    var isPlaying = false;
+    var dispatcher = null;
+    var voiceChannel = null;
+    var skipReq = 0;
+    var skippers = [];
+
+    if(msg.startsWith(prefix + 'play')){
+        if(member.voiceChannel || bot.guilds.get('322517098846748673').voiceConnection != null) {
+        if(queue.length > 0 || isPlaying){
+            getID(args, function(id) {
+                add_to_queue(id);
+                fetchVideoInfo(id, function(videoInfo) {
+                    if(err) throw new Error(err);
+                    message.reply(' The song: **' + fetchVideoInfo.title + "** has been added to the queue list.");
+                });
+            });
+        } else {
+            isPlaying = true;
+            getID(args, function(id){
+                queue.push("placeholder");
+                playMusic(id, message);
+                    message.reply(' your song(s) has been added to the queue.');
+            });
+        }
+        } else {
+            message.reply('You must be in a voice channel!');
+        }
+        const msg = message.content.toLowerCase();
+    } else if(msg.startsWith(prefix + 'skip')){
+        if(skippers.indexOf(message.author.id) == -1){
+            skippers.push(message.author.id);
+            skipReq++;
+            //if(skipReq >= Math.floor((voiceChannel.members.size - 1) / 2)) {
+                skip_song(message);
+                message.reply('You have skipped the current song.');
+            //    message.reply(' your skip has been added.');
+            //} else {
+            //    message.reply(' your skip has been added. You need **' + Math.ceil((voiceChannel.members.size - 1) / 2) - skipReq + "** more skips.");
+            //}
+            //} else {
+            //    message.reply(' you already voted to skip you cheeky bastard.')
+
+        }
+
     }
+
+
 });
 
-client.on('ready', function() {
-  console.log('So fucking ready!');
-});
+var queue = [];function skip_song(message){
+    dispatcher.end();
+    if(queue.length > 1) {
+        playMusic(queue[0], message);
+    } else {
+    skipReq = 0
+    skippers = [];
+
+    }
+
+}
 
 function playMusic(id, message) {
  voiceChannel = message.member.voiceChannel;
