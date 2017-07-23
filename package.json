@@ -1,0 +1,41 @@
+{
+  "name": "bot",
+  "version": "1.0.0",
+  "description": "An in-depth guide on deploying your Discord.js bot on Heroku",
+  "main": "index.js",
+  "engines": {
+      "node": "7.8.0",
+      "npm": "4.2.0"
+  },
+  "dependencies": {
+    "discord.js": "^11.1.0",
+    "ffmpeg-binaries": "^3.2.2-3",
+    "fs": "0.0.1-security",
+    "get-youtube-id": "^1.0.0",
+    "npm": "^3.10.10",
+    "opusscript": "0.0.3",
+    "package.json": "^2.0.1",
+    "request": "^2.81.0",
+    "youtube-info": "^1.1.1",
+    "ytdl-core": "^0.14.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cptsoap6969/MusicBotTut.git"
+  },
+  "keywords": [
+    "horuko",
+    "discord.js"
+  ],
+  "author": "me",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cptsoap6969/MusicBotTut/issues"
+  },
+  "homepage": "https://github.com/cptsoap6969/MusicBotTut#readme"
+}
